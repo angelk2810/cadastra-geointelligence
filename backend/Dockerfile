@@ -5,7 +5,7 @@ WORKDIR /app
 # Install system dependencies for rasterio, GDAL, and OpenCV
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgdal-dev gdal-bin \
-    libgl1-mesa-glx libglib2.0-0 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 # Paths are relative to repo root (Railway build context)
