@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pydantic
+python-multipart
+SQLAlchemy
+rasterio
+shapely
+geopandas
+pyproj
+opencv-python
+torch
+transformers

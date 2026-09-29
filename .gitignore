@@ -1,0 +1,16 @@
+node_modules/
+**/node_modules/
+venv/
+.venv/
+**/venv/
+**/.venv/
+__pycache__/
+*.pyc
+.env
+.env.*
+!.env.example
+dist/
+build/
+.DS_Store
+data/uploads/
+data/outputs/
