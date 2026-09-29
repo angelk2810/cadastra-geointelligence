@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UploadCloud, Image as ImageIcon, Map as MapIcon, ArrowRight, Layers, ShieldCheck, Cpu, Download, ArrowRightCircle, CheckCircle2 } from 'lucide-react';
 import { useProject } from '../context/ProjectContext';
+import { API_BASE_URL } from '../config/api';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -60,7 +61,7 @@ export default function Dashboard() {
         setReviewStats({ total, accepted, edited, rejected, pending, valid, invalid });
       }
 
-      fetch('http://localhost:8000/api/metrics')
+      fetch(`${API_BASE_URL}/api/metrics`)
         .then(res => res.json())
         .then(data => setMetricsData(data))
         .catch(err => console.error(err));
@@ -90,7 +91,7 @@ export default function Dashboard() {
       
       layers.push(new ImageLayer({
           source: new Static({
-              url: `http://localhost:8000/api/image/${sourceMeta.filename}`,
+              url: `${API_BASE_URL}/api/image/${sourceMeta.filename}`,
               projection: proj,
               imageExtent: extent,
           }),
@@ -173,10 +174,10 @@ export default function Dashboard() {
     try {
       const formData = new FormData();
       formData.append('file', selectedFile);
-      const uploadRes = await fetch('http://localhost:8000/api/upload', { method: 'POST', body: formData });
+      const uploadRes = await fetch(`${API_BASE_URL}/api/upload`, { method: 'POST', body: formData });
       const uploadData = await uploadRes.json();
       
-      const extractRes = await fetch('http://localhost:8000/api/extract', {
+      const extractRes = await fetch(`${API_BASE_URL}/api/extract`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ filename: uploadData.filename })
       });
@@ -207,7 +208,7 @@ export default function Dashboard() {
       if (!reviewed) return;
       const parsedData = JSON.parse(reviewed);
       
-      const res = await fetch('http://localhost:8000/api/export_features', {
+      const res = await fetch(`${API_BASE_URL}/api/export_features`, {
          method: 'POST', headers: { 'Content-Type': 'application/json' },
          body: JSON.stringify({
              features: parsedData.features,
@@ -221,7 +222,7 @@ export default function Dashboard() {
       
       const responseData = await res.json();
       const a = document.createElement('a');
-      a.href = `http://localhost:8000${responseData.download_url}`;
+      a.href = `${API_BASE_URL}${responseData.download_url}`;
       a.download = responseData.download_url.split('/').pop();
       document.body.appendChild(a);
       a.click();

@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { API_BASE_URL } from '../config/api';
 import { useProject } from '../context/ProjectContext';
 import { MapPin, LayoutDashboard, Map as MapIcon, ShieldAlert, Layers } from 'lucide-react';
 import clsx from 'clsx';
@@ -79,7 +80,7 @@ export default function Layout() {
                   const parsedData = JSON.parse(reviewed);
                   const extractData = extractRaw ? JSON.parse(extractRaw) : null;
                   
-                  const res = await fetch('http://localhost:8000/api/export_features', {
+                  const res = await fetch(`${API_BASE_URL}/api/export_features`, {
                     method: 'POST', headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         features: parsedData.features,
@@ -91,7 +92,7 @@ export default function Layout() {
                   if (!res.ok) throw new Error("Export failed");
                   const data = await res.json();
                   const a = document.createElement('a');
-                  a.href = `http://localhost:8000${data.download_url}`;
+                  a.href = `${API_BASE_URL}${data.download_url}`;
                   a.download = data.download_url.split('/').pop();
                   document.body.appendChild(a);
                   a.click();

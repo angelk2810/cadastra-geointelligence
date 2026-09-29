@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { API_BASE_URL } from '../config/api';
 import 'ol/ol.css';
 import Map from 'ol/Map';
 import View from 'ol/View';
@@ -104,7 +105,7 @@ export default function GISReview() {
         
         sourceLayerRef.current = new ImageLayer({
           source: new Static({
-            url: `http://localhost:8000/api/image/${sourceData.filename}`,
+            url: `${API_BASE_URL}/api/image/${sourceData.filename}`,
             imageExtent: extent,
             projection: proj,
           }),
@@ -218,7 +219,7 @@ export default function GISReview() {
             const geom = format.writeGeometryObject(geomToValidate!);
             
             try {
-              const res = await fetch('/api/validate_geometry', {
+              const res = await fetch(`${API_BASE_URL}/api/validate_geometry`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ geometry: geom })
