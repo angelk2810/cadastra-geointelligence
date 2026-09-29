@@ -8,7 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
+# Paths are relative to repo root (Railway build context)
+COPY backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Pre-download the SegFormer model at build time so it's cached in the image
@@ -18,7 +19,7 @@ from transformers import SegformerImageProcessor, SegformerForSemanticSegmentati
 SegformerImageProcessor.from_pretrained('tomascanivari/segformer-b0-finetuned-buildings'); \
 SegformerForSemanticSegmentation.from_pretrained('tomascanivari/segformer-b0-finetuned-buildings')"
 
-COPY app/ ./app/
+COPY backend/app/ ./app/
 
 # Create data directories
 RUN mkdir -p /app/data/uploads /app/data/outputs
@@ -27,4 +28,5 @@ RUN mkdir -p /app/data/uploads /app/data/outputs
 ENV PORT=8000
 EXPOSE ${PORT}
 
-CMD uvicorn app.main:app --host 0.0.0.0 --port ${PORT}
+CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT}"]
+
