@@ -5,13 +5,20 @@ from app.api import endpoints
 
 app = FastAPI(title="CadastraAI API", version="1.0.0")
 
-# Read allowed origins from env var (comma-separated), fallback to wildcard for local dev
-cors_origins = os.getenv("CORS_ORIGINS", "*").split(",")
+# Read allowed origins from env var (comma-separated), fallback to wildcard for all origins
+raw_cors = os.getenv("CORS_ORIGINS", "*").strip()
+if raw_cors == "*":
+    cors_origins = ["*"]
+    allow_creds = False
+else:
+    cors_origins = [o.strip() for o in raw_cors.split(",") if o.strip()]
+    allow_creds = True
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
-    allow_credentials=True,
+    allow_origin_regex=r"https://.*\.vercel\.app|http://localhost(:\d+)?",
+    allow_credentials=allow_creds,
     allow_methods=["*"],
     allow_headers=["*"],
 )
